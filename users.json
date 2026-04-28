@@ -1,0 +1,42 @@
+{
+  "admin": {
+    "username": "admin",
+    "password_hash": "053cfe701fda5198f53aa387b6081bfbbf9dc4525d04087f5c800ee409c56856",
+    "email": "admin@blockchain.com",
+    "full_name": "System Administrator",
+    "address": "System Address",
+    "phone": "000-000-0000",
+    "wallet_address": "",
+    "created_at": "2026-04-08T00:48:03.985526",
+    "approved_at": "2026-04-08T00:48:03.985526",
+    "role": "admin"
+  },
+  "masteradmin": {
+    "username": "masteradmin",
+    "password_hash": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    "email": "example@bc.com",
+    "full_name": "yoho taiwai",
+    "address": "c",
+    "phone": "6526",
+    "aadhar_number": "147852369852",
+    "wallet_address": "0x24048b6D5E7AB34500AeDFe639cF0c5Fdc37dD00",
+    "created_at": "2026-04-08T01:11:37.598702",
+    "status": "pending",
+    "approved_at": "2026-04-08T01:12:01.445838",
+    "role": "user"
+  },
+  "1": {
+    "username": "1",
+    "password_hash": "0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c",
+    "email": "1@11.com",
+    "full_name": "11",
+    "address": "11",
+    "phone": "11",
+    "aadhar_number": "111111111111",
+    "wallet_address": "0x1A9906a3D18243090a25fca5a57410782d08b5c5",
+    "created_at": "2026-04-08T01:14:05.469817",
+    "status": "pending",
+    "approved_at": "2026-04-21T09:53:14.363617",
+    "role": "user"
+  }
+}

@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THC Coin - The Blockchain</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-top: 100px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .admin-link {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .admin-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .logout-link {
+            background: rgba(231, 62, 62, 0.8);
+        }
+        .logout-link:hover {
+            background: rgba(231, 62, 62, 1);
+        }
+        .navbar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideDown 1s ease-out;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            animation: fadeIn 1.5s ease-out;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 2s ease-out;
+        }
+        .admin-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .admin-header h3 {
+            color: #1a202c;
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .admin-stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .stat-number {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .admin-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .admin-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(72, 187, 120, 0.2);
+        }
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.3);
+        }
+        .admin-btn:active {
+            transform: translateY(0);
+        }
+        .admin-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+        .admin-btn.primary:hover {
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+        .admin-btn.secondary {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+        }
+        .admin-btn.secondary:hover {
+            box-shadow: 0 6px 12px rgba(66, 153, 225, 0.3);
+        }
+        .admin-btn.refresh {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            box-shadow: 0 2px 4px rgba(237, 137, 54, 0.2);
+        }
+        .admin-btn.refresh:hover {
+            box-shadow: 0 6px 12px rgba(237, 137, 54, 0.3);
+        }
+        .admin-btn.tertiary {
+            background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);
+            box-shadow: 0 2px 4px rgba(128, 90, 213, 0.2);
+        }
+        .admin-btn.tertiary:hover {
+            box-shadow: 0 6px 12px rgba(128, 90, 213, 0.3);
+        }
+        .btn-icon {
+            font-size: 16px;
+        }
+        .btn-text {
+            font-weight: 600;
+        }
+        .search-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-input {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .filter-select {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .admin-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .user-list-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        .user-list-section:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .section-header h4 {
+            margin: 0;
+            color: #2d3748;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .section-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .users-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            color: #718096;
+        }
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .empty-action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .empty-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        .user-item {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: white;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .user-item:hover {
+            background: #f8fafc;
+            transform: translateX(2px);
+        }
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .user-info-display {
+            flex: 1;
+            min-width: 0;
+        }
+        .user-info-display strong {
+            color: #1a202c;
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .user-details {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.5;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 12px;
+        }
+        .user-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-detail-label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .user-detail-value {
+            color: #2d3748;
+        }
+        .user-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .user-status.pending {
+            background: #fef5e7;
+            color: #d69e2e;
+            border: 1px solid #f6e05e;
+        }
+        .user-status.approved {
+            background: #c6f6d5;
+            color: #38a169;
+            border: 1px solid #9ae6b4;
+        }
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+        .approve-btn, .reject-btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .approve-btn {
+            background: #48bb78;
+            color: white;
+            box-shadow: 0 1px 3px rgba(72, 187, 120, 0.2);
+        }
+        .approve-btn:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+        .reject-btn {
+            background: #f56565;
+            color: white;
+            box-shadow: 0 1px 3px rgba(245, 101, 101, 0.2);
+        }
+        .reject-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 400px;
+        }
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .notification.success {
+            border-left: 4px solid #48bb78;
+        }
+        .notification.success .notification-icon {
+            color: #48bb78;
+        }
+        .notification.error {
+            border-left: 4px solid #f56565;
+        }
+        .notification.error .notification-icon {
+            color: #f56565;
+        }
+        .notification.warning {
+            border-left: 4px solid #ed8936;
+        }
+        .notification.warning .notification-icon {
+            color: #ed8936;
+        }
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+        }
+        .notification-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .notification-text {
+            font-size: 14px;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        h2 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        .section {
+            background: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .connection-section {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .role-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .role-btn {
+            flex: 1;
+            max-width: 150px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .function-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .function-item h3 {
+            margin-bottom: 10px;
+            color: #495057;
+            font-size: 1.1em;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .role-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .admin-panel {
+                padding: 15px;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .admin-header h3 {
+                font-size: 1.3em;
+            }
+            .admin-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+            .admin-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            .admin-controls {
+                justify-content: center;
+            }
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .search-input {
+                width: 100%;
+            }
+            .admin-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .user-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding: 15px;
+            }
+            .user-avatar {
+                align-self: center;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .user-status {
+                position: static;
+                align-self: center;
+            }
+            .user-actions {
+                align-self: stretch;
+                margin-left: 0;
+                justify-content: center;
+            }
+            .user-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .notification {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            .user-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .nav-brand {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-brand">🌿 The Blockchain</div>
+            <div class="nav-links">
+                <a href="/dashboard">Home</a>
+                <a href="/login">Login</a>
+                <a href="#about">About</a>
+                <a href="#info">Info</a>
+                <a href="#contribution">Contribution</a>
+            </div>
+            <div class="user-actions">
+                {% if session.get('username') %}
+                <span>Welcome, <strong>{{ session.get('username') }}</strong></span>
+                {% if session.get('role') == 'admin' %}
+                <a href="/admin" class="admin-link">⚡ Admin</a>
+                {% endif %}
+                <a href="/logout" class="logout-link">🚪 Logout</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <header>
+            <h1>🌿 THC Coin</h1>
+            <p>Manage your THC Coin blockchain operations with ease</p>
+        </header>
+
+        <div class="section connection-section">
+            <h2>🔌 Connection</h2>
+            <div class="form-group">
+                <label for="rpc_url">RPC URL:</label>
+                <input type="text" id="rpc_url" value="http://127.0.0.1:7546">
+            </div>
+            <button onclick="connect()">Connect to Blockchain</button>
+            <div id="connection_status" class="status"></div>
+        </div>
+
+        <div class="section">
+            <h2>👤 Role Selection</h2>
+            <div class="role-section">
+                <button class="role-btn" onclick="setRole('user')">👤 User Mode</button>
+                <button class="role-btn" onclick="setRole('admin')">⚡ Admin Mode</button>
+            </div>
+            <div id="role_status" class="status"></div>
+        </div>
+
+        <div id="user_section" class="section hidden">
+            <h2>👤 User Functions</h2>
+            <div class="function-grid">
+                <div class="function-item">
+                    <h3>💰 Check ETH Balance</h3>
+                    <div class="form-group">
+                        <label for="balance_address">Address:</label>
+                        <input type="text" id="balance_address" placeholder="0x...">
+                    </div>
+                    <button onclick="getBalance()">Check Balance</button>
+                </div>
+                <div class="function-item">
+                    <h3>📊 All Account Balances</h3>
+                    <button onclick="getAllBalances()">View All Balances</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin_section" class="section hidden">
+            <h2>⚡ Admin Functions</h2>
+
+            <!-- Enhanced Admin Panel Section -->
+            <div class="admin-panel">
+                <div class="admin-header">
+                    <h3>👥 User Management Dashboard</h3>
+                    <div class="admin-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="pending-count">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="approved-count">0</span>
+                            <span class="stat-label">Approved</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-users">0</span>
+                            <span class="stat-label">Total Users</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-toolbar">
+                    <div class="admin-controls">
+                        <button onclick="window.location.href='/admin'" class="admin-btn primary">
+                            <span class="btn-icon">👥</span>
+                            <span class="btn-text">Approve User</span>
+                        </button>
+                        <button onclick="loadPendingUsers()" class="admin-btn secondary">
+                            <span class="btn-icon">📋</span>
+                            <span class="btn-text">Load Pending</span>
+                        </button>
+                        <button onclick="loadApprovedUsers()" class="admin-btn refresh">
+                            <span class="btn-icon">✅</span>
+                            <span class="btn-text">View Approved</span>
+                        </button>
+                        <button onclick="refreshUserLists()" class="admin-btn tertiary">
+                            <span class="btn-icon">🔄</span>
+                            <span class="btn-text">Refresh</span>
+                        </button>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" id="user-search" placeholder="🔍 Search users..." class="search-input">
+                        <select id="filter-role" class="filter-select">
+                            <option value="all">All Roles</option>
+                            <option value="user">Users</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-content">
+                    <div id="pending_users_section" class="user-list-section">
+                        <div class="section-header">
+                            <h4>⏳ Pending User Approvals</h4>
+                            <span class="section-count" id="pending-section-count">(0)</span>
+                        </div>
+                        <div id="pending_users_list" class="users-list">
+                            <div class="empty-state">
+                                <div class="empty-icon">📋</div>
+                                <div class="empty-text">No pending user registrations</div>
+                                <button onclick="loadPendingUsers()" class="empty-action-btn">Load Pending Users</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="approved_users_section" class="user-list-section">
+                        <div class="section-header">
+                            <h4>✅ Approved Users</h4>
+                            <span class="section-count" id="approved-section-count">(0)</span>
+                        </div>
+                        <div id="approved_users_list" class="users-list">
+                            <div class="empty-state">
+                                <div class="empty-icon">👥</div>
+                                <div class="empty-text">No approved users yet</div>
+                                <button onclick="loadApprovedUsers()" class="empty-action-btn">Load Approved Users</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="contract_address">Contract Address:</label>
+                <input type="text" id="contract_address" placeholder="0x...">
+            </div>
+
+            <div class="function-grid">
+                <div class="function-item">
+                    <h3>💰 Check ETH Balance</h3>
+                    <div class="form-group">
+                        <label for="eth_balance_address">Address:</label>
+                        <input type="text" id="eth_balance_address" placeholder="0x...">
+                    </div>
+                    <button onclick="getEthBalance()">Check ETH Balance</button>
+                </div>
+                <div class="function-item">
+                    <h3>📊 All ETH Balances</h3>
+                    <button onclick="getAllEthBalances()">View All ETH Balances</button>
+                </div>
+                <div class="function-item">
+                    <h3>👑 Contract Owner</h3>
+                    <button onclick="getContractOwner()">Get Current Owner</button>
+                </div>
+                <div class="function-item">
+                    <h3>🔄 Transfer Ownership</h3>
+                    <div class="form-group">
+                        <label for="new_owner">New Owner Address:</label>
+                        <input type="text" id="new_owner" placeholder="0x...">
+                    </div>
+                    <button onclick="transferOwnership()">Transfer Ownership</button>
+                </div>
+                <div class="function-item">
+                    <h3>🪙 Mint Tokens</h3>
+                    <div class="form-group">
+                        <label for="mint_to">Recipient Address:</label>
+                        <input type="text" id="mint_to" placeholder="0x...">
+                    </div>
+                    <div class="form-group">
+                        <label for="mint_amount">Amount:</label>
+                        <input type="number" id="mint_amount" placeholder="1000">
+                    </div>
+                    <button onclick="mintTokens()">Mint Tokens</button>
+                </div>
+                <div class="function-item">
+                    <h3>🔥 Burn Tokens</h3>
+                    <div class="form-group">
+                        <label for="burn_amount">Amount:</label>
+                        <input type="number" id="burn_amount" placeholder="1000">
+                    </div>
+                    <button onclick="burnTokens()">Burn Tokens</button>
+                </div>
+                <div class="function-item">
+                    <h3>📤 Transfer Tokens</h3>
+                    <div class="form-group">
+                        <label for="transfer_to">Recipient Address:</label>
+                        <input type="text" id="transfer_to" placeholder="0x...">
+                    </div>
+                    <div class="form-group">
+                        <label for="transfer_amount">Amount:</label>
+                        <input type="number" id="transfer_amount" placeholder="1000">
+                    </div>
+                    <button onclick="transferTokens()">Transfer Tokens</button>
+                </div>
+                <div class="function-item">
+                    <h3>💸 Send ETH</h3>
+                    <div class="form-group">
+                        <label for="send_to">Recipient Address:</label>
+                        <input type="text" id="send_to" placeholder="0x...">
+                    </div>
+                    <div class="form-group">
+                        <label for="send_amount">Amount (ETH):</label>
+                        <input type="number" step="0.01" id="send_amount" placeholder="1.0">
+                    </div>
+                    <button onclick="sendEth()">Send ETH</button>
+                </div>
+                <div class="function-item">
+                    <h3>🪙 Token Balance</h3>
+                    <div class="form-group">
+                        <label for="token_balance_address">Address:</label>
+                        <input type="text" id="token_balance_address" placeholder="0x...">
+                    </div>
+                    <button onclick="getTokenBalance()">Check Token Balance</button>
+                </div>
+                <div class="function-item">
+                    <h3>📜 Transaction History</h3>
+                    <button onclick="getTransfers()">View Past Transfers</button>
+                </div>
+                <div class="function-item">
+                    <h3>ℹ️ Contract Info</h3>
+                    <button onclick="getContractInfo()">Get Contract Details</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <button onclick="clearResults()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">🗑️ Clear Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let role = null;
+        let accounts = [];
+
+        async function postData(url, data) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+                credentials: 'same-origin'
+            });
+            return response.json();
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '<div style="text-align: center; margin-bottom: 10px;"><button onclick="clearResults()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">🗑️ Clear Results</button></div>';
+        }
+
+        async function connect() {
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/connect', { rpc_url });
+            const status = document.getElementById('connection_status');
+            if (result.success) {
+                accounts = result.accounts;
+                status.innerHTML = '✅ Connected successfully. Accounts loaded.';
+                status.className = 'status success';
+            } else {
+                status.innerHTML = '❌ Connection failed: ' + result.error;
+                status.className = 'status error';
+            }
+        }
+
+        function setRole(selectedRole) {
+            role = selectedRole;
+            const status = document.getElementById('role_status');
+            status.innerHTML = '✅ Role set to: ' + (role === 'user' ? '👤 User' : '⚡ Admin');
+            status.className = 'status success';
+            document.getElementById('user_section').classList.toggle('hidden', role !== 'user');
+            document.getElementById('admin_section').classList.toggle('hidden', role !== 'admin');
+        }
+
+        async function getBalance() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div style="text-align: center; padding: 20px;">⏳ Checking balance...</div>';
+
+            const address = document.getElementById('balance_address').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_balance', { rpc_url, address });
+            if (result.error) {
+                resultsDiv.innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                resultsDiv.innerHTML = `<strong>💰 ETH Balance:</strong>\n${result.balance} ETH`;
+            }
+            resultsDiv.innerHTML += '<div style="text-align: center; margin-top: 10px;"><button onclick="clearResults()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">🗑️ Clear Results</button></div>';
+        }
+
+        async function getAllBalances() {
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_all_balances', { rpc_url });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                let output = '<strong>📊 All Account Balances:</strong>\n';
+                for (const [addr, bal] of Object.entries(result)) {
+                    output += `💳 ${addr}: ${bal} ETH\n`;
+                }
+                document.getElementById('results').innerHTML = output;
+            }
+        }
+
+        async function getEthBalance() {
+            const address = document.getElementById('eth_balance_address').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_balance', { rpc_url, address });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = `<strong>💰 ETH Balance:</strong>\n${result.balance} ETH`;
+            }
+        }
+
+        async function getAllEthBalances() {
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_all_balances', { rpc_url });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                let output = '<strong>📊 All ETH Account Balances:</strong>\n';
+                for (const [addr, bal] of Object.entries(result)) {
+                    output += `💳 ${addr}: ${bal} ETH\n`;
+                }
+                document.getElementById('results').innerHTML = output;
+            }
+        }
+
+        async function getContractOwner() {
+            const contract_address = document.getElementById('contract_address').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_contract_owner', { rpc_url, contract_address });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = `<strong>👑 Current Owner:</strong>\n${result.owner}`;
+            }
+        }
+
+        async function transferOwnership() {
+            const contract_address = document.getElementById('contract_address').value;
+            const new_owner = document.getElementById('new_owner').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const from_account = accounts[0]; // Assuming first account
+            const result = await postData('/transfer_ownership', { rpc_url, contract_address, new_owner, from_account });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = '<strong>✅ Ownership transferred successfully!</strong>';
+            }
+        }
+
+        async function mintTokens() {
+            const contract_address = document.getElementById('contract_address').value;
+            const to = document.getElementById('mint_to').value;
+            const amount = document.getElementById('mint_amount').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const from_account = accounts[0];
+            const result = await postData('/mint_tokens', { rpc_url, contract_address, to, amount, from_account });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = '<strong>✅ Tokens minted successfully!</strong>';
+            }
+        }
+
+        async function burnTokens() {
+            const contract_address = document.getElementById('contract_address').value;
+            const amount = document.getElementById('burn_amount').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const from_account = accounts[0];
+            const result = await postData('/burn_tokens', { rpc_url, contract_address, amount, from_account });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = '<strong>🔥 Tokens burned successfully!</strong>';
+            }
+        }
+
+        async function transferTokens() {
+            const contract_address = document.getElementById('contract_address').value;
+            const to = document.getElementById('transfer_to').value;
+            const amount = document.getElementById('transfer_amount').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const from_account = accounts[0];
+            const result = await postData('/transfer_tokens', { rpc_url, contract_address, to, amount, from_account });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = '<strong>📤 Tokens transferred successfully!</strong>';
+            }
+        }
+
+        async function sendEth() {
+            const to = document.getElementById('send_to').value;
+            const amount = document.getElementById('send_amount').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const from_account = accounts[0];
+            const result = await postData('/send_eth', { rpc_url, to, amount, from_account });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = '<strong>💸 ETH sent successfully!</strong>';
+            }
+        }
+
+        async function getTokenBalance() {
+            const contract_address = document.getElementById('contract_address').value;
+            const address = document.getElementById('token_balance_address').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_token_balance', { rpc_url, contract_address, address });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                document.getElementById('results').innerHTML = `<strong>🪙 Token Balance:</strong>\n${result.balance} tokens`;
+            }
+        }
+
+        async function getTransfers() {
+            const contract_address = document.getElementById('contract_address').value;
+            const rpc_url = document.getElementById('rpc_url').value;
+            const result = await postData('/get_transfers', { rpc_url, contract_address });
+            if (result.error) {
+                document.getElementById('results').innerHTML = `<strong>❌ Error:</strong>\n${result.error}`;
+            } else {
+                let output = '<strong>📜 Past Token Transfers:</strong>\n';
+                result.transfers.forEach(t => {
+                    output += `📤 From: ${t.from}\n📥 To: ${t.to}\n💰 Value: ${t.value}\n\n`;
+                });
+                document.getElementById('results').innerHTML = output;
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '<div style="text-align: center; margin-bottom: 10px;"><button onclick="clearResults()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">🗑️ Clear Results</button></div>';
+        }
+
+        // Enhanced Admin Panel Functions
+        async function loadPendingUsers() {
+            showLoading('pending_users_list');
+            const result = await postData('/api/admin/pending_users', {});
+            hideLoading('pending_users_list');
+
+            if (result.error) {
+                showError('pending_users_list', result.error);
+                return;
+            }
+
+            updateStats(result.users.length, null);
+            displayUsers('pending_users_list', result.users, 'pending');
+        }
+
+        async function loadApprovedUsers() {
+            showLoading('approved_users_list');
+            const result = await postData('/api/admin/approved_users', {});
+            hideLoading('approved_users_list');
+
+            if (result.error) {
+                showError('approved_users_list', result.error);
+                return;
+            }
+
+            updateStats(null, result.users.length);
+            displayUsers('approved_users_list', result.users, 'approved');
+        }
+
+        function updateStats(pendingCount, approvedCount) {
+            if (pendingCount !== null) {
+                document.getElementById('pending-count').textContent = pendingCount;
+                document.getElementById('pending-section-count').textContent = `(${pendingCount})`;
+            }
+            if (approvedCount !== null) {
+                document.getElementById('approved-count').textContent = approvedCount;
+                document.getElementById('approved-section-count').textContent = `(${approvedCount})`;
+            }
+
+            const total = (pendingCount !== null ? pendingCount : parseInt(document.getElementById('pending-count').textContent)) +
+                         (approvedCount !== null ? approvedCount : parseInt(document.getElementById('approved-count').textContent));
+            document.getElementById('total-users').textContent = total;
+        }
+
+        function displayUsers(containerId, users, status) {
+            const container = document.getElementById(containerId);
+
+            if (users.length === 0) {
+                const action = status === 'pending' ? 'loadPendingUsers()' : 'loadApprovedUsers()';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">${status === 'pending' ? '📋' : '👥'}</div>
+                        <div class="empty-text">No ${status} user registrations</div>
+                        <button onclick="${action}" class="empty-action-btn">Load ${status === 'pending' ? 'Pending' : 'Approved'} Users</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            users.forEach(user => {
+                const avatarLetter = user.username.charAt(0).toUpperCase();
+                const statusClass = status === 'pending' ? 'pending' : 'approved';
+                const statusText = status === 'pending' ? 'Pending' : 'Approved';
+
+                html += `
+                    <div class="user-item" data-username="${user.username}" data-role="${user.role || 'user'}">
+                        <div class="user-avatar">${avatarLetter}</div>
+                        <div class="user-info-display">
+                            <strong>${user.username}</strong>
+                            <div class="user-details">
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">📧</span>
+                                    <span class="user-detail-value">${user.email}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">👤</span>
+                                    <span class="user-detail-value">${user.full_name}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">📞</span>
+                                    <span class="user-detail-value">${user.phone}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">🏠</span>
+                                    <span class="user-detail-value">${user.address}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">🆔</span>
+                                    <span class="user-detail-value">${user.aadhar_number || 'Not provided'}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">💰</span>
+                                    <span class="user-detail-value">${user.wallet_address || 'Not provided'}</span>
+                                </div>
+                                ${status === 'approved' ? `
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">👑</span>
+                                    <span class="user-detail-value">${user.role}</span>
+                                </div>
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">📅</span>
+                                    <span class="user-detail-value">${new Date(user.approved_at).toLocaleDateString()}</span>
+                                </div>
+                                ` : `
+                                <div class="user-detail-item">
+                                    <span class="user-detail-label">📅</span>
+                                    <span class="user-detail-value">${new Date(user.created_at).toLocaleDateString()}</span>
+                                </div>
+                                `}
+                            </div>
+                        </div>
+                        <span class="user-status ${statusClass}">${statusText}</span>
+                        ${status === 'pending' ? `
+                        <div class="user-actions">
+                            <button class="approve-btn" onclick="approveUser('${user.username}')">
+                                <span>✅</span> Approve
+                            </button>
+                            <button class="reject-btn" onclick="rejectUser('${user.username}')">
+                                <span>❌</span> Reject
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            filterUsers(); // Apply current filters
+        }
+
+        function showLoading(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⏳</div>
+                    <div class="empty-text">Loading users...</div>
+                </div>
+            `;
+        }
+
+        function hideLoading(containerId) {
+            // Loading state is replaced by actual content
+        }
+
+        function showError(containerId, error) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <div class="empty-text">Error: ${error}</div>
+                    <button onclick="refreshUserLists()" class="empty-action-btn">Try Again</button>
+                </div>
+            `;
+        }
+
+        async function approveUser(username) {
+            if (!confirm(`Are you sure you want to approve user "${username}"?`)) {
+                return;
+            }
+
+            // Show loading state on the button
+            const button = event.target.closest('.approve-btn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>⏳</span> Processing...';
+            button.disabled = true;
+
+            const result = await postData(`/api/admin/approve/${username}`, {});
+            if (result.success) {
+                showNotification(`✅ User "${username}" has been approved!`, 'success');
+                refreshUserLists();
+            } else {
+                showNotification(`❌ Error approving user: ${result.error}`, 'error');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        async function rejectUser(username) {
+            if (!confirm(`Are you sure you want to reject user "${username}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            // Show loading state on the button
+            const button = event.target.closest('.reject-btn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>⏳</span> Processing...';
+            button.disabled = true;
+
+            const result = await postData(`/api/admin/reject/${username}`, {});
+            if (result.success) {
+                showNotification(`❌ User "${username}" has been rejected and removed.`, 'warning');
+                refreshUserLists();
+            } else {
+                showNotification(`❌ Error rejecting user: ${result.error}`, 'error');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        function refreshUserLists() {
+            loadPendingUsers();
+            loadApprovedUsers();
+        }
+
+        function filterUsers() {
+            const searchTerm = document.getElementById('user-search').value.toLowerCase();
+            const roleFilter = document.getElementById('filter-role').value;
+
+            // Filter pending users
+            const pendingItems = document.querySelectorAll('#pending_users_list .user-item');
+            pendingItems.forEach(item => {
+                const username = item.dataset.username.toLowerCase();
+                const role = item.dataset.role;
+                const matchesSearch = username.includes(searchTerm);
+                const matchesRole = roleFilter === 'all' || role === roleFilter;
+                item.style.display = matchesSearch && matchesRole ? 'flex' : 'none';
+            });
+
+            // Filter approved users
+            const approvedItems = document.querySelectorAll('#approved_users_list .user-item');
+            approvedItems.forEach(item => {
+                const username = item.dataset.username.toLowerCase();
+                const role = item.dataset.role;
+                const matchesSearch = username.includes(searchTerm);
+                const matchesRole = roleFilter === 'all' || role === roleFilter;
+                item.style.display = matchesSearch && matchesRole ? 'flex' : 'none';
+            });
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span>
+                    <span class="notification-text">${message}</span>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Show with animation
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 5000);
+        }
+
+        // Initialize search and filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('user-search');
+            const filterSelect = document.getElementById('filter-role');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterUsers);
+            }
+            if (filterSelect) {
+                filterSelect.addEventListener('change', filterUsers);
+            }
+        });
+    </script>
+
+    <!-- Content Sections -->
+    <section id="about" class="content-section">
+        <div class="container">
+            <h2>About THC Coin</h2>
+            <p>THC Coin is a revolutionary cryptocurrency built on the Ethereum blockchain. Experience the future of digital currency with our secure, transparent, and decentralized platform. THC Coin offers fast transactions, low fees, and innovative features for the modern crypto enthusiast.</p>
+        </div>
+    </section>
+
+    <section id="info" class="content-section">
+        <div class="container">
+            <h2>THC Coin Information</h2>
+            <p>Learn about THC Coin's unique features, including smart contract integration, decentralized governance, and community-driven development. Our platform uses cutting-edge blockchain technology to ensure security, transparency, and scalability for all users.</p>
+        </div>
+    </section>
+
+    <section id="contribution" class="content-section">
+        <div class="container">
+            <h2>Our Team & Contributions</h2>
+            <div class="team-section">
+                <div class="team-member s">
+                    <h3>👑 Saurabh Bhosale</h3>
+                    <p><strong>Founder & Lead Developer</strong></p>
+                    <p>Saurabh Bhosale is the visionary founder of THC Coin, the mastermind behind this revolutionary blockchain platform. As the primary architect and developer, he conceptualized, designed, and implemented the entire system from the ground up, combining expertise in Flask, Web3.py, blockchain technology, and modern web development to create a secure, scalable, and user-friendly cryptocurrency platform.</p>
+                </div>
+
+                <div class="team-member">
+                    <h3>👩‍🎨 Krutika</h3>
+                    <p><strong>UI/UX Designer & Frontend Assistant</strong></p>
+                    <p>Krutika assisted Saurabh in bringing the THC Coin vision to life through exceptional user interface design. Working closely with the founder, she crafted the intuitive and responsive design system, implemented modern UI principles, and ensured every user interaction feels smooth and engaging.</p>
+                </div>
+
+                <div class="team-member">
+                    <h3>👨‍🔧 Aakash</h3>
+                    <p><strong>Backend Developer & Blockchain Assistant</strong></p>
+                    <p>Aakash collaborated with Saurabh on the technical implementation, focusing on blockchain integration and backend systems. He assisted in implementing Web3.py connections, smart contract interactions, and robust data management systems under Saurabh's guidance.</p>
+                </div>
+
+                <div class="team-member">
+                    <h3>🧪 Moin</h3>
+                    <p><strong>Quality Assurance & Testing Assistant</strong></p>
+                    <p>Moin worked alongside Saurabh to ensure THC Coin's reliability and security. He assisted in comprehensive testing, performed quality checks, conducted security audits, and helped maintain the highest standards of excellence for the platform.</p>
+                </div>
+            </div>
+
+            <div class="contribution-call">
+                <h3>Under Saurabh Bhosale's Vision</h3>
+                <p>THC Coin was born from Saurabh Bhosale's innovative vision to revolutionize cryptocurrency. With the dedicated assistance of our talented team - Krutika, Soham, and Moin - we've created a platform that represents the future of secure, transparent, and community-driven digital finance. Each team member brings unique expertise, working together under Saurabh's leadership to push the boundaries of blockchain technology.</p>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .content-section {
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .content-section:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .content-section h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+            animation: slideUp 1s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        .content-section p {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            animation: fadeInUp 1.2s ease-out 0.3s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: forwards;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .team-member.founder {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+
+        .team-member.founder:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+        }
+
+        .team-member.founder h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.4em;
+        }
+
+        .team-member.founder p:first-of-type {
+            color: #ffd700;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-member h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            text-align: center;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .team-member.founder h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.4em;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .contribution-call {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .contribution-call h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .contribution-call p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: none;
+            font-size: 1.1em;
+        }
+    </style>
+
+    <style>
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Add floating animation to the main title */
+        header h1 {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Add pulse animation to buttons */
+        .admin-btn, button {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+    </style>
+</body>
+</html>

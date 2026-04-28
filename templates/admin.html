@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THC Coin Admin Panel - The Blockchain</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: #4a5568;
+            font-size: 2.2em;
+        }
+        .logout-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c53030;
+        }
+        .nav-links {
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 600;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .user-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .user-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .user-date {
+            color: #718096;
+            font-size: 0.9em;
+        }
+        .user-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .info-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-value {
+            color: #2d3748;
+            margin-top: 5px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .approve-btn {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .approve-btn:hover {
+            background: #2f855a;
+        }
+        .reject-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .reject-btn:hover {
+            background: #c53030;
+        }
+        .no-users {
+            text-align: center;
+            padding: 50px;
+            color: #718096;
+            font-size: 1.2em;
+        }
+        .status-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .status-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .user-info {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Admin Panel</h1>
+            <a href="/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">🏠 Blockchain Interface</a>
+            <a href="/admin">🔄 Refresh</a>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <h2>📋 Pending User Approvals</h2>
+
+        <div id="usersContainer">
+            {% if pending_users %}
+                {% for username, user in pending_users.items() %}
+                <div class="user-card" id="user-{{ username }}">
+                    <div class="user-header">
+                        <div class="user-name">{{ user.full_name }} ({{ username }})</div>
+                        <div class="user-date">📅 Registered: {{ user.created_at[:10] }}</div>
+                    </div>
+
+                    <div class="user-info">
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">{{ user.email }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">{{ user.phone }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Address</div>
+                            <div class="info-value">{{ user.address }}</div>
+                        </div>
+                        {% if user.wallet_address %}
+                        <div class="info-item">
+                            <div class="info-label">Wallet Address</div>
+                            <div class="info-value">{{ user.wallet_address }}</div>
+                        </div>
+                        {% endif %}
+                        {% if user.aadhar_number %}
+                        <div class="info-item">
+                            <div class="info-label">Aadhar Number</div>
+                            <div class="info-value">{{ user.aadhar_number }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="approve-btn" onclick="approveUser('{{ username }}')">✅ Approve</button>
+                        <button class="reject-btn" onclick="rejectUser('{{ username }}')">❌ Reject</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-users">
+                    🎉 No pending user registrations to review!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        async function approveUser(username) {
+            if (!confirm(`Are you sure you want to approve ${username}?`)) {
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Processing...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch(`/api/admin/approve/${username}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatusMessage(result.message, 'success');
+                    document.getElementById(`user-${username}`).remove();
+                } else {
+                    showStatusMessage(result.error || 'Failed to approve user', 'error');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            } catch (error) {
+                showStatusMessage('Network error. Please try again.', 'error');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        async function rejectUser(username) {
+            if (!confirm(`Are you sure you want to reject ${username}? This action cannot be undone.`)) {
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Processing...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch(`/api/admin/reject/${username}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatusMessage(result.message, 'success');
+                    document.getElementById(`user-${username}`).remove();
+                } else {
+                    showStatusMessage(result.error || 'Failed to reject user', 'error');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            } catch (error) {
+                showStatusMessage('Network error. Please try again.', 'error');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        function showStatusMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.style.display = 'block';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

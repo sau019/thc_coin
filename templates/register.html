@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - THC Coin | The Blockchain</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .error-message {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: #38a169;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👤 User Registration</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username *</label>
+                <input type="text" id="username" required>
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" required>
+                <div class="error-message" id="fullNameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Physical Address *</label>
+                <input type="text" id="address" required>
+                <div class="error-message" id="addressError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" required>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="aadharNumber">Aadhar Number *</label>
+                <input type="text" id="aadharNumber" required pattern="[0-9]{12}" maxlength="12" placeholder="12-digit Aadhar number">
+                <div class="error-message" id="aadharNumberError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="walletAddress">Wallet Address *</label>
+                <input type="text" id="walletAddress" required placeholder="0x...">
+                <div class="error-message" id="walletAddressError"></div>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span id="btnText">📝 Register Account</span>
+            </button>
+        </form>
+
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="links">
+            <a href="/login">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Clear previous messages
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            document.getElementById('successMessage').style.display = 'none';
+
+            // Get form data
+            const formData = {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                email: document.getElementById('email').value.trim(),
+                full_name: document.getElementById('fullName').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                aadhar_number: document.getElementById('aadharNumber').value.trim(),
+                wallet_address: document.getElementById('walletAddress').value.trim()
+            };
+
+            // Client-side validation
+            let hasErrors = false;
+
+            if (!formData.username) {
+                showError('usernameError', 'Username is required');
+                hasErrors = true;
+            }
+
+            if (!formData.password) {
+                showError('passwordError', 'Password is required');
+                hasErrors = true;
+            } else if (formData.password.length < 6) {
+                showError('passwordError', 'Password must be at least 6 characters');
+                hasErrors = true;
+            }
+
+            if (formData.password !== formData.confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                hasErrors = true;
+            }
+
+            if (!formData.email) {
+                showError('emailError', 'Email is required');
+                hasErrors = true;
+            } else if (!isValidEmail(formData.email)) {
+                showError('emailError', 'Please enter a valid email address');
+                hasErrors = true;
+            }
+
+            if (!formData.full_name) {
+                showError('fullNameError', 'Full name is required');
+                hasErrors = true;
+            }
+
+            if (!formData.address) {
+                showError('addressError', 'Address is required');
+                hasErrors = true;
+            }
+
+            if (!formData.phone) {
+                showError('phoneError', 'Phone number is required');
+                hasErrors = true;
+            }
+
+            if (!formData.aadhar_number) {
+                showError('aadharNumberError', 'Aadhar number is required');
+                hasErrors = true;
+            } else if (!/^[0-9]{12}$/.test(formData.aadhar_number)) {
+                showError('aadharNumberError', 'Aadhar number must be exactly 12 digits');
+                hasErrors = true;
+            }
+
+            if (!formData.wallet_address) {
+                showError('walletAddressError', 'Wallet address is required');
+                hasErrors = true;
+            } else if (!/^0x[a-fA-F0-9]{40}$/.test(formData.wallet_address)) {
+                showError('walletAddressError', 'Please enter a valid Ethereum wallet address (0x...)');
+                hasErrors = true;
+            }
+
+            // Show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            submitBtn.disabled = true;
+            btnText.innerHTML = '⏳ Registering...';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                    credentials: 'same-origin'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('successMessage').textContent = result.message;
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('registerForm').reset();
+                } else {
+                    showError('generalError', result.error);
+                }
+            } catch (error) {
+                showError('generalError', 'Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                btnText.innerHTML = '📝 Register Account';
+            }
+        });
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            } else {
+                // Create general error message
+                let generalError = document.getElementById('generalError');
+                if (!generalError) {
+                    generalError = document.createElement('div');
+                    generalError.id = 'generalError';
+                    generalError.className = 'error-message';
+                    document.querySelector('form').appendChild(generalError);
+                }
+                generalError.textContent = message;
+                generalError.style.display = 'block';
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>
